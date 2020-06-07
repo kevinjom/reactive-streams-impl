@@ -20,26 +20,36 @@ public class MonooMap<I, O> extends Monoo<O> {
      */
     @Override
     public void subscribe(Subscriber<? super O> s) {
-        source.subscribe(new Subscriber<I>() {
-            @Override
-            public void onSubscribe(Subscription subscription) {
-                s.onSubscribe(subscription);
-            }
+        source.subscribe(new MapSubscriber<>(s, mapper));
+    }
 
-            @Override
-            public void onNext(I i) {
-                s.onNext(mapper.apply(i));
-            }
+    private static class MapSubscriber<I, O> implements Subscriber<I> {
+        private final Subscriber<? super O> actual;
+        private final Function<I, O> mapper;
 
-            @Override
-            public void onError(Throwable t) {
-                s.onError(t);
-            }
+        public MapSubscriber(Subscriber<? super O> actual, Function<I, O> mapper) {
+            this.actual = actual;
+            this.mapper = mapper;
+        }
 
-            @Override
-            public void onComplete() {
-                s.onComplete();
-            }
-        });
+        @Override
+        public void onSubscribe(Subscription subscription) {
+            actual.onSubscribe(subscription); // create your own Subscription to apply logic when actual subscriber request/cancel
+        }
+
+        @Override
+        public void onNext(I i) {
+            actual.onNext(mapper.apply(i));
+        }
+
+        @Override
+        public void onError(Throwable t) {
+            actual.onError(t);
+        }
+
+        @Override
+        public void onComplete() {
+            actual.onComplete();
+        }
     }
 }
