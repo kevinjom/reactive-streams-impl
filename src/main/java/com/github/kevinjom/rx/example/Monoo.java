@@ -2,7 +2,6 @@ package com.github.kevinjom.rx.example;
 
 import org.reactivestreams.*;
 
-import java.util.concurrent.CountDownLatch;
 import java.util.function.*;
 
 public abstract class Monoo<T> implements Publisher<T> {
@@ -26,39 +25,4 @@ public abstract class Monoo<T> implements Publisher<T> {
         return subscriber.blockingGet();
     }
 
-    private static class MonooBlockSubscriber<T> implements Subscriber<T> {
-        private T value;
-        CountDownLatch latch = new CountDownLatch(1);
-
-        @Override
-        public void onSubscribe(Subscription s) {
-            s.request(Integer.MAX_VALUE);
-        }
-
-        @Override
-        public void onNext(T t) {
-            this.value = t;
-            latch.countDown();
-        }
-
-        @Override
-        public void onError(Throwable t) {
-            // TODO:
-        }
-
-        @Override
-        public void onComplete() {
-            latch.countDown();
-        }
-
-        public T blockingGet() {
-            try {
-                latch.await();
-            } catch (InterruptedException e) {
-                onError(e);
-            }
-
-            return value;
-        }
-    }
 }
