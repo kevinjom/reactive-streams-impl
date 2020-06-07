@@ -39,7 +39,12 @@ public class MonooMap<I, O> extends Monoo<O> {
 
         @Override
         public void onNext(I i) {
-            actual.onNext(mapper.apply(i));
+            try {
+                O mapped = mapper.apply(i);
+                actual.onNext(mapped);
+            } catch (Throwable throwable) {
+                onError(throwable);
+            }
         }
 
         @Override
