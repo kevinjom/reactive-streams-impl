@@ -20,13 +20,18 @@ public class Monoo<T> implements Publisher<T> {
 
             @Override
             public void request(long n) {
+                if (n <= 0) {
+                    s.onError(new IllegalArgumentException());
+                    done = true;
+                }
+
                 if (done) {
                     return;
                 }
 
+                done = true;
                 s.onNext(value);
                 s.onComplete();
-                done = true;
             }
 
             @Override
