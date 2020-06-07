@@ -9,7 +9,7 @@ public class Monoo<T> implements Publisher<T> {
         this.value = value;
     }
 
-    public static <T> Publisher<T> just(T value) {
+    public static <T> Monoo<T> just(T value) {
         return new Monoo<T>(value);
     }
 
