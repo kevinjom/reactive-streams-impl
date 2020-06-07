@@ -48,4 +48,7 @@ public class Monoo<T> implements Publisher<T> {
         this.subscribe(new LambdaMonooSubscriber<>(valueConsumer, errorConsumer, completeConsumer));
     }
 
+    public <O> Monoo<O> map(Function<T, O> mapper) {
+        return new Monoo<>(mapper.apply(value));
+    }
 }

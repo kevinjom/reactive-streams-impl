@@ -1,6 +1,5 @@
 package com.github.kevinjom.rx.example;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.reactivestreams.*;
@@ -11,11 +10,11 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MonooTest {
+public class MonooMapTest {
 
     @ParameterizedTest
     @MethodSource("publishers")
-    void testPublisher(Publisher<Integer> publisher) {
+    void testMap(Publisher<String> publisher) {
 
 
         List<String> invocation = new ArrayList<>();
@@ -30,8 +29,8 @@ public class MonooTest {
             }
 
             @Override
-            public void onNext(Integer integer) {
-                invocation.add("onNext:" + integer);
+            public void onNext(String value) {
+                invocation.add("onNext:" + value);
 
             }
 
@@ -55,22 +54,22 @@ public class MonooTest {
 
         assertThat(invocation).containsExactly(
                 "onSubscribe",
-                "onNext:1",
+                "onNext:hi2",
                 "onComplete"
         );
 
         sub.get().request(1);
         assertThat(invocation).containsExactly(
                 "onSubscribe",
-                "onNext:1",
+                "onNext:hi2",
                 "onComplete"
         );
     }
 
-    static List<Publisher<Integer>> publishers() {
+    static List<Publisher<String>> publishers() {
         return List.of(
-                Mono.just(1),
-                Monoo.just(1)
+                Mono.just(1).map(i -> i * 2).map(i -> "hi" + i),
+                Monoo.just(1).map(i -> i * 2).map(i -> "hi" + i)
         );
     }
 }
