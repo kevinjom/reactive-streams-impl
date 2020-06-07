@@ -1,7 +1,9 @@
 package com.github.kevinjom.rx.example;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.reactivestreams.*;
+import reactor.core.publisher.Mono;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -10,9 +12,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MonooTest {
 
-    @Test
-    void testPublisher() {
-        Publisher<Integer> publisher = Monoo.just(1);
+    @ParameterizedTest
+    @MethodSource("publishers")
+    void testPublisher(Publisher<Integer> publisher) {
 
 
         List<String> invocation = new ArrayList<>();
@@ -61,6 +63,13 @@ public class MonooTest {
                 "onSubscribe",
                 "onNext:1",
                 "onComplete"
+        );
+    }
+
+    static List<Publisher<Integer>> publishers() {
+        return List.of(
+                Mono.just(1),
+                Monoo.just(1)
         );
     }
 }
