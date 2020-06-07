@@ -16,6 +16,10 @@ public class MonooMapTckTest extends PublisherVerification<String> {
 
     @Override
     public Publisher<String> createFailedPublisher() {
-        return null;
+        return Monoo.just(1)
+                .map(i -> {
+                    throw new RuntimeException("mapper failed...");
+                })
+                .map(i -> "hi" + i);
     }
 }
