@@ -2,6 +2,8 @@ package com.github.kevinjom.rx.example;
 
 import org.reactivestreams.*;
 
+import java.util.function.*;
+
 public class Monoo<T> implements Publisher<T> {
     private final T value;
 
@@ -40,4 +42,9 @@ public class Monoo<T> implements Publisher<T> {
             }
         });
     }
+
+    public void subscribe(Consumer<T> valueConsumer, Consumer<Throwable> errorConsumer, Runnable completeConsumer) {
+
+    }
+
 }
