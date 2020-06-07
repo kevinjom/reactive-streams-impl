@@ -43,8 +43,49 @@ public class Monoo<T> implements Publisher<T> {
         });
     }
 
+    //TODO: return handle for cancellation
     public void subscribe(Consumer<T> valueConsumer, Consumer<Throwable> errorConsumer, Runnable completeConsumer) {
+        this.subscribe(new Subscriber<T>() {
+            @Override
+            public void onSubscribe(Subscription s) {
+                s.request(Integer.MAX_VALUE);
+            }
 
+            @Override
+            public void onNext(T t) {
+                if (valueConsumer != null) {
+                    try {
+                        valueConsumer.accept(t);
+                    } catch (Throwable e) {
+                        propogateError(e);
+                    }
+                }
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                if (errorConsumer != null) {
+                    errorConsumer.accept(t);
+                } else {
+                    propogateError(t);
+                }
+            }
+
+            private void propogateError(Throwable t) {
+                throw new RuntimeException("unhandled error", t);
+            }
+
+            @Override
+            public void onComplete() {
+                if (completeConsumer != null) {
+                    try {
+                        completeConsumer.run();
+                    } catch (Throwable e) {
+                        propogateError(e);
+                    }
+                }
+            }
+        });
     }
 
 }

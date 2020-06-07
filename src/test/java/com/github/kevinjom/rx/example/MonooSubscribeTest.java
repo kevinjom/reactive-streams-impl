@@ -1,7 +1,6 @@
 package com.github.kevinjom.rx.example;
 
-import org.junit.jupiter.api.Nested;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.*;
 import reactor.core.publisher.Mono;
 
 import java.util.*;
@@ -37,32 +36,77 @@ public class MonooSubscribeTest {
                     "onComplete"
             );
         }
-
     }
 
+    @Nested
+    class OurMonoo {
+        @Test
+        void monooSubscribe() {
 
-    @Test
-    void monooSubscribe() {
+            Monoo<Integer> publisher = Monoo.just(1);
 
-        Monoo<Integer> publisher = Monoo.just(1);
+            List<String> invocation = new ArrayList<>();
 
-        List<String> invocation = new ArrayList<>();
+            Consumer<Integer> valueConsumer = i -> {
+                invocation.add("onNext:" + i);
+            };
 
-        Consumer<Integer> valueConsumer = i -> {
-            invocation.add("onNext:" + i);
-        };
+            Consumer<Throwable> errorConsumer = null;
 
-        Consumer<Throwable> errorConsumer = null;
+            Runnable completeConsumer = () -> {
+                invocation.add("onComplete");
+            };
 
-        Runnable completeConsumer = () -> {
-            invocation.add("onComplete");
-        };
+            publisher.subscribe(valueConsumer, errorConsumer, completeConsumer);
 
-        publisher.subscribe(valueConsumer, errorConsumer, completeConsumer);
+            assertThat(invocation).containsExactly(
+                    "onNext:1",
+                    "onComplete"
+            );
+        }
 
-        assertThat(invocation).containsExactly(
-                "onNext:1",
-                "onComplete"
-        );
+        @Test
+        void monooSubscribe_noValueConsumeer() {
+
+            Monoo<Integer> publisher = Monoo.just(1);
+
+            List<String> invocation = new ArrayList<>();
+
+            Consumer<Integer> valueConsumer = i -> {
+                invocation.add("onNext:" + i);
+            };
+
+            Consumer<Throwable> errorConsumer = null;
+
+            Runnable completeConsumer = null;
+
+            publisher.subscribe(valueConsumer, errorConsumer, completeConsumer);
+
+            assertThat(invocation).containsExactly(
+                    "onNext:1"
+            );
+        }
+
+        @Test
+        void monooSubscribe_noCompletionConsumeer() {
+
+            Monoo<Integer> publisher = Monoo.just(1);
+
+            List<String> invocation = new ArrayList<>();
+
+            Consumer<Integer> valueConsumer = null;
+
+            Consumer<Throwable> errorConsumer = null;
+
+            Runnable completeConsumer = () -> {
+                invocation.add("onComplete");
+            };
+
+            publisher.subscribe(valueConsumer, errorConsumer, completeConsumer);
+
+            assertThat(invocation).containsExactly(
+                    "onComplete"
+            );
+        }
     }
 }
