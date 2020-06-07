@@ -18,4 +18,8 @@ public abstract class Monoo<T> implements Publisher<T> {
         // in order to chain the following opeartors, it has to return a Monoo
         return new MonooMap(this, mapper);
     }
+
+    public T block() {
+        return null;
+    }
 }
