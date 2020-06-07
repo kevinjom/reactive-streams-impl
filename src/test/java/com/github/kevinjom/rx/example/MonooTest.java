@@ -53,14 +53,14 @@ public class MonooTest {
         assertThat(invocation).containsExactly(
                 "onSubscribe",
                 "onNext:1",
-                "onComplet"
+                "onComplete"
         );
 
         sub.get().request(1);
         assertThat(invocation).containsExactly(
                 "onSubscribe",
                 "onNext:1",
-                "onComplet"
+                "onComplete"
         );
     }
 }
