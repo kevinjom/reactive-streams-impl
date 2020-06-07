@@ -26,6 +26,7 @@ public class MonooMap<I, O> extends Monoo<O> {
     private static class MapSubscriber<I, O> implements Subscriber<I> {
         private final Subscriber<? super O> actual;
         private final Function<I, O> mapper;
+        private boolean done;
 
         public MapSubscriber(Subscriber<? super O> actual, Function<I, O> mapper) {
             this.actual = actual;
@@ -39,6 +40,10 @@ public class MonooMap<I, O> extends Monoo<O> {
 
         @Override
         public void onNext(I i) {
+            if (done) {
+                return;
+            }
+
             try {
                 O mapped = mapper.apply(i);
                 actual.onNext(mapped);
@@ -49,12 +54,22 @@ public class MonooMap<I, O> extends Monoo<O> {
 
         @Override
         public void onError(Throwable t) {
+            if (done) {
+                return;
+            }
+
             actual.onError(t);
+            done = true;
         }
 
         @Override
         public void onComplete() {
+            if (done) {
+                return;
+            }
+
             actual.onComplete();
+            done = true;
         }
     }
 }
