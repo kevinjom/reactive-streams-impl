@@ -1,14 +1,12 @@
 package com.github.kevinjom.rx.example;
 
 import org.reactivestreams.*;
-import org.slf4j.*;
 
 import java.util.concurrent.CountDownLatch;
 
 class MonooBlockSubscriber<T> extends CountDownLatch implements Subscriber<T> {
-    private static final Logger logger = LoggerFactory.getLogger(CountDownLatch.class);
-
     private T value;
+    private Throwable error;
 
     public MonooBlockSubscriber() {
         super(1);
@@ -27,7 +25,8 @@ class MonooBlockSubscriber<T> extends CountDownLatch implements Subscriber<T> {
 
     @Override
     public void onError(Throwable t) {
-        // TODO:
+        this.error = t;
+        countDown();
     }
 
     @Override
@@ -42,6 +41,14 @@ class MonooBlockSubscriber<T> extends CountDownLatch implements Subscriber<T> {
             onError(e);
         }
 
+        if (this.error != null) {
+            propagateError(error);
+        }
+
         return value;
+    }
+
+    private void propagateError(Throwable t) {
+        throw new RuntimeException("unhandled error", t);
     }
 }

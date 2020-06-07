@@ -26,7 +26,7 @@ class LambdaMonooSubscriber<T> implements Subscriber<T> {
             try {
                 valueConsumer.accept(t);
             } catch (Throwable e) {
-                propogateError(e);
+                propagateError(e);
             }
         }
     }
@@ -36,11 +36,11 @@ class LambdaMonooSubscriber<T> implements Subscriber<T> {
         if (errorConsumer != null) {
             errorConsumer.accept(t);
         } else {
-            propogateError(t);
+            propagateError(t);
         }
     }
 
-    private void propogateError(Throwable t) {
+    private void propagateError(Throwable t) {
         throw new RuntimeException("unhandled error", t);
     }
 
@@ -50,7 +50,7 @@ class LambdaMonooSubscriber<T> implements Subscriber<T> {
             try {
                 completeConsumer.run();
             } catch (Throwable e) {
-                propogateError(e);
+                propagateError(e);
             }
         }
     }
