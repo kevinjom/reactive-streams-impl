@@ -6,7 +6,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 public class MonooBlockTest {
 
@@ -47,5 +47,42 @@ public class MonooBlockTest {
                         })
                         .block()
         ).isEqualTo(3);
+    }
+
+
+    @Test
+    void mono_testBlockError() {
+        // Mono
+        assertThatThrownBy(
+                () -> Mono.just(1)
+                        .map(i -> {
+                            logger.info("sleeping...");
+                            try {
+                                TimeUnit.SECONDS.sleep(1);
+                            } catch (InterruptedException e) {
+                            }
+                            logger.info("finished sleeping...");
+                            throw new RuntimeException("mapper ex");
+                        })
+                        .block()
+        ).isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void monoo_testBlockError() {
+        // Mono
+        assertThatThrownBy(
+                () -> Monoo.just(1)
+                        .map(i -> {
+                            logger.info("sleeping...");
+                            try {
+                                TimeUnit.SECONDS.sleep(1);
+                            } catch (InterruptedException e) {
+                            }
+                            logger.info("finished sleeping...");
+                            throw new RuntimeException("mapper ex");
+                        })
+                        .block()
+        ).isInstanceOf(RuntimeException.class);
     }
 }
