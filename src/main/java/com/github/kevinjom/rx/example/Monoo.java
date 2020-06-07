@@ -49,8 +49,7 @@ public class Monoo<T> implements Publisher<T> {
     }
 
     public <O> Monoo<O> map(Function<T, O> mapper) {
-        // can we do this?
-        this.mapper = mapper;
-        return this;
+        // in order to chain the following opeartors, it has to return a Monoo
+        return new MonooMap(this, mapper);
     }
 }
