@@ -1,6 +1,6 @@
 package com.github.kevinjom.rx.example;
 
-import org.reactivestreams.*;
+import org.reactivestreams.Publisher;
 
 import java.util.function.*;
 
@@ -18,6 +18,11 @@ public abstract class Monoo<T> implements Publisher<T> {
         // in order to chain the following opeartors, it has to return a Monoo
         return new MonooMap(this, mapper);
     }
+
+    public <O> Monoo<O> filter(Predicate<T> predicate) {
+        return null;
+    }
+
 
     public T block() {
         MonooBlockSubscriber<T> subscriber = new MonooBlockSubscriber<>();
