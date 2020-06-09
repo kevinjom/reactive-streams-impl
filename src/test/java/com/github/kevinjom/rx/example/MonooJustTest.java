@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MonooTest {
+public class MonooJustTest {
 
     @ParameterizedTest
     @MethodSource("publishers")
