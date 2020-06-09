@@ -20,7 +20,7 @@ public abstract class Monoo<T> implements Publisher<T> {
     }
 
     public <O> Monoo<O> filter(Predicate<T> predicate) {
-        return null;
+        return new MonooFilter(this, predicate);
     }
 
 
