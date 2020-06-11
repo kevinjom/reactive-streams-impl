@@ -115,6 +115,7 @@ public class MonooBlockTest {
         executor.execute(() -> {
             assertThatThrownBy(
                     () -> Mono.just(1)
+                            .map(i -> i * 3)
                             .block()
             ).isInstanceOf(IllegalStateException.class);
 
