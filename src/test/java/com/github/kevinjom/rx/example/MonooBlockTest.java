@@ -104,4 +104,23 @@ public class MonooBlockTest {
 
         latch.await();
     }
+
+    @Test
+    void mono_failsIfBlockOnNonBlockingThread() throws InterruptedException {
+        ExecutorService executor =
+                Executors.newSingleThreadExecutor(r -> new NonBlockingThread(r, "non-blocking-thread"));
+
+        CountDownLatch latch = new CountDownLatch(1);
+
+        executor.execute(() -> {
+            assertThatThrownBy(
+                    () -> Mono.just(1)
+                            .block()
+            ).isInstanceOf(IllegalStateException.class);
+
+            latch.countDown();
+        });
+
+        latch.await();
+    }
 }
