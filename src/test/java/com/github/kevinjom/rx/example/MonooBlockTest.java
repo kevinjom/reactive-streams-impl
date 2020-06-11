@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.*;
 import reactor.core.publisher.Mono;
 
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -84,5 +84,24 @@ public class MonooBlockTest {
                         })
                         .block()
         ).isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void failsIfBlockOnNonBlockingThread() throws InterruptedException {
+        ExecutorService executor =
+                Executors.newSingleThreadExecutor(r -> new NonBlockingThread(r, "non-blocking-thread"));
+
+        CountDownLatch latch = new CountDownLatch(1);
+
+        executor.execute(() -> {
+            assertThatThrownBy(
+                    () -> Monoo.just(1)
+                            .block()
+            ).isInstanceOf(IllegalStateException.class);
+
+            latch.countDown();
+        });
+
+        latch.await();
     }
 }

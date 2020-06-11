@@ -35,6 +35,10 @@ class MonooBlockSubscriber<T> extends CountDownLatch implements Subscriber<T> {
     }
 
     public T blockingGet() {
+        if (Thread.currentThread() instanceof NonBlockingThread) {
+            throw new IllegalStateException("block() are blocking, which is not supported in thread " + Thread.currentThread().getName());
+        }
+
         try {
             await();
         } catch (InterruptedException e) {
