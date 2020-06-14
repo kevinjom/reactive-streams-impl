@@ -19,6 +19,11 @@ public abstract class Monoo<T> implements Publisher<T> {
         return new MonooMap(this, mapper);
     }
 
+    public <O> Monoo<O> flatMap(Function<T, Monoo<O>> mapper) {
+        // in order to chain the following opeartors, it has to return a Monoo
+        return new MonooFlatMap<>(this, mapper);
+    }
+
     public <O> Monoo<O> filter(Predicate<T> predicate) {
         return new MonooFilter(this, predicate);
     }
