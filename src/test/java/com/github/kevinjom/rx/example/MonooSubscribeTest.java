@@ -66,7 +66,7 @@ public class MonooSubscribeTest {
         }
 
         @Test
-        void monooSubscribe_noValueConsumeer() {
+        void monooSubscribe_onlyValueConsumeer() {
 
             Monoo<Integer> publisher = Monoo.just(1);
 
@@ -88,7 +88,7 @@ public class MonooSubscribeTest {
         }
 
         @Test
-        void monooSubscribe_noCompletionConsumeer() {
+        void monooSubscribe_onlyCompletionConsumeer() {
 
             Monoo<Integer> publisher = Monoo.just(1);
 
